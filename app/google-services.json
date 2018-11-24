@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "351254438739",
+    "firebase_url": "https://ancla-1bb3a.firebaseio.com",
+    "project_id": "ancla-1bb3a",
+    "storage_bucket": "ancla-1bb3a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351254438739:android:3ca7912b9120b537",
+        "android_client_info": {
+          "package_name": "com.prototype.ancla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "351254438739-cdkhp80sshdo94qgcva430q788i0rofh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_XPboHE_Bx7kZxlKGlm44HBGlyO0VMBc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

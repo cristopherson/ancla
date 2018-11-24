@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "471422188943",
+    "firebase_url": "https://ankla-5de80.firebaseio.com",
+    "project_id": "ankla-5de80",
+    "storage_bucket": "ankla-5de80.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471422188943:android:8636408454532b79",
+        "android_client_info": {
+          "package_name": "com.example.ankla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471422188943-o32uuq33h5lcabrrqi98o12ql06l6dqt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNhwbua_50tFJEta37nrmU-rYnNHqhFPA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
