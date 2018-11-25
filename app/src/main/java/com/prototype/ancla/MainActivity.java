@@ -1,5 +1,6 @@
 package com.prototype.ancla;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,14 +11,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.google.firebase.database.*;
 
-
 public class MainActivity extends AppCompatActivity {
     private Button button = null;
     private TextView textView = null;
     private EditText editText = null;
+    public static String LOG_ANCLA_TAG = "LogAncla";
 
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference messageRef = ref.child("messages/WelcomeMessage");
+    private DatabaseReference messageRef = ref.child("messages");
+    private FloodEvent floodEvent = new FloodEvent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +41,10 @@ public class MainActivity extends AppCompatActivity {
             messageRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getKey().compareTo("WelcomeMessage") == 0) {
-                        Log.d("LogAncla","" + dataSnapshot.getValue().toString());
-                        String value = dataSnapshot.getValue().toString();
-                        editText.setText(value);
-                    } else {
-                        Log.d("LogAncla", "Invalid key: " + dataSnapshot.getKey());
+                    if (floodEvent.parseDataSnapshot(dataSnapshot) == false) {
+                        Log.d("LogAncla", "DataSnapshot parsing failed");
                     }
                 }
-
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -55,16 +52,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Log.d("LogAncla", "messageRef is null");
+            Log.d(MainActivity.LOG_ANCLA_TAG, "messageRef is null");
         }
     }
 
     public void openMap() {
         String message = editText.getText().toString();
-        messageRef.setValue(message);
-        editText.setText("");
+        //messageRef.setValue(message);
+        //editText.setText("");
 
-        //Intent mapIntent = new Intent(this, MapsActivity.class);
-        //startActivity(mapIntent);
+        Bundle args = new Bundle();
+        args.putString(FloodEvent.DATASNAPSHOT_CHILD_STATUS, floodEvent.getStatus());
+        args.putString(FloodEvent.DATASNAPSHOT_CHILD_LATITUDE, floodEvent.getLatitude());
+        args.putString(FloodEvent.DATASNAPSHOT_CHILD_LONGITUDE, floodEvent.getLongitude());
+
+        Intent mapIntent = new Intent(this, MapsActivity.class);
+        mapIntent.putExtras(args);
+        startActivity(mapIntent);
     }
 }
