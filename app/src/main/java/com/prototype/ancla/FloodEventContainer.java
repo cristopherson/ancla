@@ -4,15 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import java.io.Serializable;
+import com.google.firebase.database.DataSnapshot;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class FloodEventContainer implements Parcelable{
     private HashMap<String, FloodEvent> events =  new HashMap<>();
+    private String newMessageKey = "";
 
     public FloodEventContainer(HashMap<String, FloodEvent> events) {
         if(events == null) {
@@ -97,4 +97,94 @@ public class FloodEventContainer implements Parcelable{
             return new FloodEventContainer[size];
         }
     };
+
+    public boolean parseDataSnapshot(DataSnapshot dataSnapshot){
+        boolean successfulParsing = true;
+
+        if(dataSnapshot.hasChildren()) {
+            for (DataSnapshot children:dataSnapshot.getChildren()) {
+                boolean successElement = false;
+                FloodEvent floodEvent = new FloodEvent();
+
+                floodEvent.setEvent(children.getKey());
+                floodEvent.setId(floodEvent.getEvent().substring(0,4));
+
+                Log.d(MainActivity.LOG_ANCLA_TAG, "id = " + floodEvent.getId());
+                Log.d(MainActivity.LOG_ANCLA_TAG, "event = " + floodEvent.getEvent());
+                Log.d(MainActivity.LOG_ANCLA_TAG,"content = " + children.getValue());
+
+                if(children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_LATITUDE)) {
+                    DataSnapshot latitudeData = null;
+
+                    latitudeData = children.child(FloodEvent.DATASNAPSHOT_CHILD_LATITUDE);
+                    Log.d(MainActivity.LOG_ANCLA_TAG, "" + latitudeData);
+
+                    if (latitudeData != null) {
+                        try {
+                            floodEvent.setLatitude(Double.valueOf((String) latitudeData.getValue()));
+                            successElement = true;
+                        } catch (Exception e) {
+                            Log.d(MainActivity.LOG_ANCLA_TAG, e.getMessage());
+                        }
+
+                    }
+                }
+                if(children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_LONGITUDE)) {
+                    DataSnapshot longitudeData = null;
+
+                    longitudeData = children.child(FloodEvent.DATASNAPSHOT_CHILD_LONGITUDE);
+                    Log.d(MainActivity.LOG_ANCLA_TAG,"" + longitudeData);
+
+                    if(longitudeData != null) {
+                        try {
+                            floodEvent.setLongitude(Double.valueOf((String)longitudeData.getValue()));
+                            successElement = true;
+                        } catch(Exception e) {
+                            Log.d(MainActivity.LOG_ANCLA_TAG, e.getMessage());
+                        }
+                    }
+                }
+                if(children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_STATUS)) {
+                    DataSnapshot statusData = null;
+
+                    statusData = children.child(FloodEvent.DATASNAPSHOT_CHILD_STATUS);
+                    Log.d(MainActivity.LOG_ANCLA_TAG,"" + statusData);
+
+                    if(statusData != null) {
+                        try {
+                            floodEvent.setStatus(Integer.valueOf((String)statusData.getValue()));
+                            successElement = true;
+                        } catch(Exception e) {
+                            Log.d(MainActivity.LOG_ANCLA_TAG, e.getMessage());
+                        }
+                    }
+                }
+
+                if(successElement) {
+                    if (events.containsKey(floodEvent.getId())) {
+                        if(events.get(floodEvent.getId()).getStatus() != floodEvent.getStatus()) {
+                            Log.d(MainActivity.LOG_ANCLA_TAG, "New event " + floodEvent.toString());
+                            newMessageKey = floodEvent.getId();
+                        }
+                    }
+                    events.put(floodEvent.getId(), floodEvent);
+                } else {
+                    successfulParsing = false;
+                }
+
+            }
+        }
+
+        return successfulParsing;
+    }
+
+    public String getNewEventMessage() {
+        FloodEvent floodEvent = events.get(newMessageKey);
+        if(floodEvent != null) {
+            return floodEvent.getEventMessage();
+        }
+
+        return "";
+    }
+
 }

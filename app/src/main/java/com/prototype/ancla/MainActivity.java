@@ -71,26 +71,16 @@ public class MainActivity extends AppCompatActivity {
             messageRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    FloodEvent floodEvent = new FloodEvent(ANCLA_USER_ID, ANCLA_USER_EVENT, FloodEvent.ANCLA_EVENT_SAFE, 0.0, 0.0);
+                    Log.d(MainActivity.LOG_ANCLA_TAG, "MainActivity events");
 
-                    if (!floodEvent.parseDataSnapshot(dataSnapshot)) {
+                    if (!events.parseDataSnapshot(dataSnapshot)) {
                         Log.d(MainActivity.LOG_ANCLA_TAG, "DataSnapshot parsing failed");
                     } else {
-                        boolean notifyEvent = true;
-                        if (events.containsKey(floodEvent.getId())) {
-                            if (events.getEventByKey(floodEvent.getEvent()).getStatus() == floodEvent.getStatus()) {
-                                notifyEvent = false;
-                            } else {
-                                events.addEvent(floodEvent.getEvent(), floodEvent);
-                            }
-                        } else {
-                            events.addEvent(floodEvent.getEvent(), floodEvent);
-                        }
+                        String notificationMessage = events.getNewEventMessage();
 
-                        if (notifyEvent) {
-
+                        if (notificationMessage.compareTo("") != 0) {
                             mBuilder.setContentTitle("Alerta Ancla")
-                                    .setContentText(floodEvent.getEventMessage());
+                                    .setContentText(notificationMessage);
 
                             mNotificationManagerCompat.notify(notificationCounter++, mBuilder.build());
                         }
@@ -110,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     public void openMap() {
         Intent mapIntent = new Intent(this, MapsActivity.class);
         mapIntent.putExtra(MapsActivity.ANCLA_PARCELABLE_EVENTS_ID, events);
+
         startActivity(mapIntent);
     }
 

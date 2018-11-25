@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-
 public class FloodEvent implements Parcelable {
     public static String DATASNAPSHOT_CHILD_STATUS="status";
     public static String DATASNAPSHOT_CHILD_LATITUDE="latitude";
@@ -93,71 +91,6 @@ public class FloodEvent implements Parcelable {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public boolean parseDataSnapshot(DataSnapshot dataSnapshot){
-        boolean successfulParsing = false;
-
-        if(dataSnapshot.hasChildren()) {
-            for (DataSnapshot children:dataSnapshot.getChildren()) {
-                event = children.getKey();
-                id = event.substring(0,4);
-
-                Log.d(MainActivity.LOG_ANCLA_TAG, "id=" + id);
-                Log.d(MainActivity.LOG_ANCLA_TAG, "event=" + event);
-                Log.d(MainActivity.LOG_ANCLA_TAG,"content=" + children.getValue());
-
-                if(children.hasChild(DATASNAPSHOT_CHILD_LATITUDE)) {
-                    DataSnapshot latitudeData = null;
-
-                    latitudeData = children.child(DATASNAPSHOT_CHILD_LATITUDE);
-                    Log.d(MainActivity.LOG_ANCLA_TAG, "" + latitudeData);
-
-                    if (latitudeData != null) {
-                        try {
-                            latitude = Double.valueOf((String) latitudeData.getValue());
-                            successfulParsing = true;
-                        } catch (Exception e) {
-                            Log.d(MainActivity.LOG_ANCLA_TAG, e.getMessage());
-                        }
-
-                    }
-                }
-                if(children.hasChild(DATASNAPSHOT_CHILD_LONGITUDE)) {
-                    DataSnapshot longitudeData = null;
-
-                    longitudeData = children.child(DATASNAPSHOT_CHILD_LONGITUDE);
-                    Log.d(MainActivity.LOG_ANCLA_TAG,"" + longitudeData);
-
-                    if(longitudeData != null) {
-                        try {
-                            longitude = Double.valueOf((String)longitudeData.getValue());
-                            successfulParsing = true;
-                        } catch(Exception e) {
-                            Log.d(MainActivity.LOG_ANCLA_TAG, e.getMessage());
-                        }
-                    }
-                }
-                if(children.hasChild(DATASNAPSHOT_CHILD_STATUS)) {
-                    DataSnapshot statusData = null;
-
-                    statusData = children.child(DATASNAPSHOT_CHILD_STATUS);
-                    Log.d(MainActivity.LOG_ANCLA_TAG,"" + statusData);
-
-                    if(statusData != null) {
-                        try {
-                            status = Integer.valueOf((String)statusData.getValue());
-                            successfulParsing = true;
-                        } catch(Exception e) {
-                            Log.d(MainActivity.LOG_ANCLA_TAG, e.getMessage());
-                        }
-                    }
-                }
-            }
-        }
-
-        Log.d(MainActivity.LOG_ANCLA_TAG, this.toString());
-        return successfulParsing;
     }
 
     public String toString() {
