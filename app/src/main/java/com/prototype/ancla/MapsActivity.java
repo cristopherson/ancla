@@ -10,6 +10,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/* The limits that this map can take are within the following coords:
+- SouthEast: 20.569391,-103.288956
+- NortWest: 20.707858,-103.461003
+* */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static String ANCLA_PARCELABLE_EVENTS_ID = "ANCLA_PARCELABLE_EVENTS_ID";
@@ -21,7 +25,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.activity_maps);
 
         valueEventListener.updateEvents(

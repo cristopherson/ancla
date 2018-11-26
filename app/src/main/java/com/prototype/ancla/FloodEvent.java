@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 public class FloodEvent implements Parcelable {
+    public static String DATASNAPSHOT_CHILD_EVENT="event";
     public static String DATASNAPSHOT_CHILD_STATUS="status";
     public static String DATASNAPSHOT_CHILD_LATITUDE="latitude";
     public static String DATASNAPSHOT_CHILD_LONGITUDE="longitude";

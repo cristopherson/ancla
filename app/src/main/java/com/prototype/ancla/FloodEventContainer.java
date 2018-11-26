@@ -2,6 +2,7 @@ package com.prototype.ancla;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -106,14 +107,29 @@ public class FloodEventContainer implements Parcelable{
                 boolean successElement = false;
                 FloodEvent floodEvent = new FloodEvent();
 
-                floodEvent.setEvent(children.getKey());
-                floodEvent.setId(floodEvent.getEvent().substring(0,4));
+                floodEvent.setId(children.getKey());
 
                 Log.d(MainActivity.LOG_ANCLA_TAG, "id = " + floodEvent.getId());
-                Log.d(MainActivity.LOG_ANCLA_TAG, "event = " + floodEvent.getEvent());
                 Log.d(MainActivity.LOG_ANCLA_TAG,"content = " + children.getValue());
 
-                if(children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_LATITUDE)) {
+                if(children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_EVENT)) {
+                    DataSnapshot eventData = null;
+
+                    eventData = children.child(FloodEvent.DATASNAPSHOT_CHILD_EVENT);
+                    Log.d(MainActivity.LOG_ANCLA_TAG, ""+ eventData);
+
+                    if (eventData != null) {
+                        try {
+                            floodEvent.setEvent((String)eventData.getValue());
+                            successElement = true;
+                        } catch (Exception e) {
+                            Log.d(MainActivity.LOG_ANCLA_TAG, e.getMessage());
+                        }
+                    }
+
+                }
+                if(successElement && children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_LATITUDE)) {
+                    successElement = false;
                     DataSnapshot latitudeData = null;
 
                     latitudeData = children.child(FloodEvent.DATASNAPSHOT_CHILD_LATITUDE);
@@ -129,8 +145,9 @@ public class FloodEventContainer implements Parcelable{
 
                     }
                 }
-                if(children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_LONGITUDE)) {
+                if(successElement && children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_LONGITUDE)) {
                     DataSnapshot longitudeData = null;
+                    successElement = false;
 
                     longitudeData = children.child(FloodEvent.DATASNAPSHOT_CHILD_LONGITUDE);
                     Log.d(MainActivity.LOG_ANCLA_TAG,"" + longitudeData);
@@ -144,8 +161,9 @@ public class FloodEventContainer implements Parcelable{
                         }
                     }
                 }
-                if(children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_STATUS)) {
+                if(successElement && children.hasChild(FloodEvent.DATASNAPSHOT_CHILD_STATUS)) {
                     DataSnapshot statusData = null;
+                    successElement = false;
 
                     statusData = children.child(FloodEvent.DATASNAPSHOT_CHILD_STATUS);
                     Log.d(MainActivity.LOG_ANCLA_TAG,"" + statusData);
