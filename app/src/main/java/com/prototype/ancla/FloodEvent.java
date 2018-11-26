@@ -100,15 +100,15 @@ public class FloodEvent implements Parcelable {
 
     public String getEventMessage() {
         if (status == ANCLA_EVENT_SAFE) {
-            return "Zona es segura";
+            return FloodHistory.ANCLA_STRING_SAFE_EVENT;
         }
         if (status == ANCLA_EVENT_WARNING) {
-            return "Zona es insegura";
+            return FloodHistory.ANCLA_STRING_WARNING_EVENT;
         }
         if (status == ANCLA_EVENT_DANGER) {
-            return "Zona de alto riesgo";
+            return FloodHistory.ANCLA_STRING_DANGER_EVENT;
         }
-        return "Evento Desconocido";
+        return FloodHistory.ANCLA_STRING_UNKNOWN_EVENT;
     }
 
     @Override

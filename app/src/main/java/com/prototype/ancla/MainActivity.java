@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -26,8 +28,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.*;
 
-import static com.prototype.ancla.AnclaValueEventListener.ANCLA_USER_EVENT;
-import static com.prototype.ancla.AnclaValueEventListener.ANCLA_USER_ID;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static String LOG_ANCLA_TAG = "LogAncla";
@@ -39,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private int notificationCounter = 0;
     private FloodEventContainer events = new FloodEventContainer();
     private FusedLocationProviderClient mFusedLocationClient;
+    private FloodHistoryContainer floodHistoryContainer = new FloodHistoryContainer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +57,24 @@ public class MainActivity extends AppCompatActivity {
         mNotificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
 
 
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button map = findViewById(R.id.map);
+        map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openMap();
             }
         });
+
+        Button alert = findViewById(R.id.alert);
+        alert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openHistory();
+            }
+        });
+
+        ImageView backgroundImg = (ImageView) findViewById(R.id.background);
+        backgroundImg.setBackgroundColor(Color.rgb(255,255,255));
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (checkLocationPermission()) {
@@ -76,14 +93,19 @@ public class MainActivity extends AppCompatActivity {
                     if (!events.parseDataSnapshot(dataSnapshot)) {
                         Log.d(MainActivity.LOG_ANCLA_TAG, "DataSnapshot parsing failed");
                     } else {
-                        String notificationMessage = events.getNewEventMessage();
+                        String eventMessage = events.getNewEventMessage();
+                        String locationMessage = events.getNewEventLocation();
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date date = new Date();
 
-                        if (notificationMessage.compareTo("") != 0) {
+                        if (eventMessage.compareTo("") != 0) {
                             mBuilder.setContentTitle("Alerta Ancla")
-                                    .setContentText(notificationMessage);
+                                    .setContentText(eventMessage);
 
                             mNotificationManagerCompat.notify(notificationCounter++, mBuilder.build());
+                            floodHistoryContainer.addElement(new FloodHistory(eventMessage, locationMessage, dateFormat.format(date)));
                         }
+
                     }
                 }
 
@@ -100,8 +122,13 @@ public class MainActivity extends AppCompatActivity {
     public void openMap() {
         Intent mapIntent = new Intent(this, MapsActivity.class);
         mapIntent.putExtra(MapsActivity.ANCLA_PARCELABLE_EVENTS_ID, events);
-
         startActivity(mapIntent);
+    }
+
+    public void openHistory() {
+        Intent historyIntent = new Intent(this, HistoryActivity.class);
+        historyIntent.putExtra(FloodHistory.ANCLA_PARCELABLE_HISTORY_ID, floodHistoryContainer);
+        startActivity(historyIntent);
     }
 
     public boolean checkLocationPermission() {

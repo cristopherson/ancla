@@ -6,6 +6,8 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -68,7 +70,10 @@ public class AnclaValueEventListener implements ValueEventListener {
                         || event.getStatus() != FloodEvent.ANCLA_EVENT_SAFE) {
                     Log.d(MainActivity.LOG_ANCLA_TAG, "Adding marker: " + event);
                     LatLng eventMarker = new LatLng(event.getLatitude(), event.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(eventMarker).title("Adding marker"));
+                    mMap.addMarker(new MarkerOptions()
+                            .position(eventMarker)
+                            .title("Adding marker"));
+                            //.icon(BitmapDescriptorFactory.fromResource()));
                     builder.include(eventMarker);
                 }
             }

@@ -205,4 +205,13 @@ public class FloodEventContainer implements Parcelable{
         return "";
     }
 
+    public String getNewEventLocation() {
+        FloodEvent floodEvent = events.get(newMessageKey);
+        if(floodEvent != null) {
+            return "" + floodEvent.getLatitude() + "," + floodEvent.getLongitude();
+        }
+
+        return "";
+    }
+
 }
