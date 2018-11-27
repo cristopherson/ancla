@@ -10,10 +10,14 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class AnclaValueEventListener implements ValueEventListener {
     public static String ANCLA_USER_ID = "0000";
@@ -23,6 +27,7 @@ public class AnclaValueEventListener implements ValueEventListener {
     private GoogleMap mMap;
     private volatile boolean isMapInitialized;
     private FloodEventContainer events;
+    private List<Marker> markerList = new LinkedList<Marker>();
 
     AnclaValueEventListener() {
         events =  new FloodEventContainer();
@@ -65,15 +70,28 @@ public class AnclaValueEventListener implements ValueEventListener {
 
 
         if(events.getEvents().values().size() > 0) {
+            if(!markerList.isEmpty()){
+                for(Marker marker:markerList) {
+                    marker.remove();
+                }
+                markerList.clear();
+            }
             for (FloodEvent event : events.getIterable()) {
                 if(event.getId().compareTo(AnclaValueEventListener.ANCLA_USER_ID) == 0
                         || event.getStatus() != FloodEvent.ANCLA_EVENT_SAFE) {
                     Log.d(MainActivity.LOG_ANCLA_TAG, "Adding marker: " + event);
                     LatLng eventMarker = new LatLng(event.getLatitude(), event.getLongitude());
-                    mMap.addMarker(new MarkerOptions()
-                            .position(eventMarker)
-                            .title("Adding marker"));
-                            //.icon(BitmapDescriptorFactory.fromResource()));
+
+                    MarkerOptions marker = new MarkerOptions();
+                    marker.position(eventMarker).title("Adding marker");
+
+                    if(event.getStatus() == FloodEvent.ANCLA_EVENT_DANGER) {
+                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.water));
+                    } else if (event.getStatus() == FloodEvent.ANCLA_EVENT_WARNING) {
+                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.warning));
+                    }
+
+                    markerList.add(mMap.addMarker(marker));
                     builder.include(eventMarker);
                 }
             }
