@@ -31,8 +31,6 @@ import com.google.firebase.database.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static String LOG_ANCLA_TAG = "LogAncla";
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mNotificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
 
 
-        Button map = findViewById(R.id.map);
+        Button map = findViewById(R.id.mapButton);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button alert = findViewById(R.id.alert);
+        Button alert = findViewById(R.id.alertsButton);
         alert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

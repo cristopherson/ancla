@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Ancla</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_history">History</string>
     <string name="title_location_permission">AnclaPermissionsRequest</string>
     <string name="text_location_permission">Location access requierd for correct usage</string>
     <string name="ok">OK</string>
+    <string name="maps_text">Mapas</string>
+    <string name="alerts_text">Alertas</string>
 </resources>
