@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, MainActivity.LOG_ANCLA_TAG)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.ancla)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         mNotificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
